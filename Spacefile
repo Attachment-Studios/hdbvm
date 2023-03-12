@@ -1,0 +1,7 @@
+v: 0
+app_name: "HDBVM"
+icon: icon.png
+micros:
+  - name: hdbvm
+    src: .
+    engine: python3.9
