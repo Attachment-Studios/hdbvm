@@ -35,7 +35,7 @@ Just use - `/api/img/value/<value>`. This gets a captcha with given value. The i
 ### <a id="image-from-existing-captcha" href="#image-from-existing-captcha">Image from existing captcha</a>
 Just use - `/api/img/id/<id>`. This gets the exact same captcha unless captcha was renewed or captcha was succesfully passed. This just fetches one if it exists. To make one you need to create a captcha.
 
-## <a id="make-a-captcha" href="#make-captcha">Make a CAPTCHA</a>
+## <a id="make-a-captcha" href="#make-a-captcha">Make a CAPTCHA</a>
 To make a captcha, call the url - `/api/new`. This will return you a `JSON` with content including ID of the captcha.
 ```json
 {
@@ -62,7 +62,7 @@ To match values you need to have id of a captcha and a value you want to check. 
 }
 ```
 
-## <a id="rener-captcha" href="#renew-captcha">Renew a CAPTCHA</a>
+## <a id="renew-captcha" href="#renew-captcha">Renew a CAPTCHA</a>
 A captcha can be renewed if it has not expired. However from this, image will always change. The value might be changed if wanted. The id for the captcha can be used for 15 minutes more. Both cases will return a similar `JSON`. Result will only bee true if captcha is valid and the process was successful.
 ```json
 {
