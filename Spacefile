@@ -5,3 +5,5 @@ micros:
   - name: hdbvm
     src: .
     engine: python3.9
+    public_routes:
+      - "/*"
