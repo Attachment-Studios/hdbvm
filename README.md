@@ -1,5 +1,5 @@
 # <a id="top" href="#top">HDBVM</a>
-<center><img src="/api/img/value/HDBVM" width="100%" height="auto" alt="HDBVM"></center><br>
+<center><img src="https://hdbvm.attachment-studios.tk/api/img/value/HDBVM" width="100%" height="auto" alt="HDBVM"></center><br>
 It stands for `Human Distinction By Visual Medthod`, in other words, a `captcha` api.
 
 # <a id="features" href="#features">What HDBVM can do?</a>
@@ -71,5 +71,5 @@ To renew the captcha image only, use - `/api/renew/img/<id>`.
 
 # <a id="icon" href="#icon">Our icon</a>
 To get our icon, if you wish so, use `/icon`.<br>
-<center><img src="/icon" width="25%" height="auto" alt="HDBVM"></center>
+<center><img src="https://hdbvm.attachment-studios.tk/icon" width="25%" height="auto" alt="HDBVM"></center>
 
