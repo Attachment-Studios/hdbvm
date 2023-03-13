@@ -4,7 +4,8 @@ import logging
 import string
 import io
 
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, Response
+from flask_cors import CORS
 from captcha.image import ImageCaptcha
 from markdown import markdown
 from deta import Deta
@@ -14,18 +15,27 @@ def random_text(length: int = 4) -> str:
 	text = "".join(secrets.choice(alphabets) for i in range(int(length)))
 	return text
 
-image_captcha = ImageCaptcha(1600, 600, font_sizes=(420, 500, 560))
+def response(content: str) -> Response:
+	resp = content if isinstance(content, Response) else Response(content)
+	resp.headers.add("Access-Control-Allow-Origin", "*")
+	resp.headers.add("Referrer-Policy", "no-referrer")
+	return resp
 
-deta = Deta()
+image_captcha = ImageCaptcha(400, 150, font_sizes=(105, 125, 140))
+
+deta = Deta("c0JDpq54AxNw_GYLzK9oVP7Mh5ZSNoXzMzdsmUsuLHDp1")
 data = deta.Base("data")
 drive = deta.Drive("CAPTCHA")
+
+def emergency_call():
+	drive.delete_many(drive.list()["names"])
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 app = Flask("HDBVM")
+CORS(app)
 
 @app.route("/")
-@app.route("/api")
 def home():
 	with open("index.md", "r") as readme_file:
 		css = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
@@ -38,9 +48,19 @@ def home():
 			</head>
 		"""
 
-		return head + markdown(
+		return response(head + markdown(
 			readme_file.read(), extensions=["fenced_code"]
-		)
+		))
+
+@app.route("/api")
+def api():
+	with open("index.html", "r") as home_file:
+		return response(home_file.read())
+
+@app.route("/api/js")
+def api_js():
+	with open("hdbvm.js", "r") as js_file:
+		return response(js_file.read())
 
 @app.route("/api/new")
 @app.route("/api/new/length/<length>")
@@ -53,9 +73,9 @@ def api_new(length: int = 4, captcha_value: str = None):
 	data.put({"value": value}, key, expire_in=900)
 	drive.put(f"{key}.png", image_data)
 
-	return jsonify({
+	return response(jsonify({
 		"id": key
-	})
+	}))
 
 @app.route("/api/img")
 @app.route("/api/img/id/<captcha_id>")
@@ -94,12 +114,13 @@ def api_check(captcha_id: str = None, input_data: str = None):
 	
 	if captcha_data["value"] == input_data:
 		drive.delete(f"{captcha_id}.png")
+		data.delete(captcha_id)
 	
-	return jsonify({
-			"id": captcha_id,
-			"exists": True,
-			"result": captcha_data["value"] == input_data
-		})
+	return response(jsonify({
+		"id": captcha_id,
+		"exists": True,
+		"result": captcha_data["value"] == input_data
+	}))
 
 @app.route("/api/renew/img/<captcha_id>")
 def api_renew_img(captcha_id: str = None):
@@ -113,10 +134,10 @@ def api_renew_img(captcha_id: str = None):
 	image_data = image_captcha.generate(captcha_data["value"])
 	drive.put(f"{captcha_id}.png", image_data)
 
-	return jsonify({
+	return response(jsonify({
 		"id": captcha_id,
 		"result": True
-	})
+	}))
 
 @app.route("/api/renew/<captcha_id>")
 def api_renew(captcha_id: str = None):
@@ -129,22 +150,22 @@ def api_renew(captcha_id: str = None):
 	
 	value = random_text(len(captcha_data["value"]))
 	data.put({"value": value}, captcha_id, expire_in=900)
-	image_data = image_captcha.generate(captcha_data["value"])
+	image_data = image_captcha.generate(value)
 	drive.put(f"{captcha_id}.png", image_data)
 
-	return jsonify({
+	return response(jsonify({
 		"id": captcha_id,
 		"result": True
-	})
+	}))
 
 @app.route("/icon")
 def icon():
-	return send_file(
+	return response(send_file(
 		"icon.png",
 		mimetype="image/png",
 		as_attachment=False,
 		download_name="icon.png"
-	)
+	))
 
 @app.errorhandler(404)
 @app.errorhandler(403)

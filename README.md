@@ -1,6 +1,7 @@
 # <a id="top" href="#top">HDBVM</a>
 <center><img src="https://hdbvm.attachment-studios.tk/api/img/value/HDBVM" width="100%" height="auto" alt="HDBVM"></center><br>
 It stands for `Human Distinction By Visual Medthod`, in other words, a `captcha` api.
+<br><center><a href="/api"><button>Go To API Dashboard</button></a></center>
 
 # <a id="features" href="#features">What HDBVM can do?</a>
 - Create captcha images.
