@@ -23,7 +23,7 @@ def response(content: str) -> Response:
 
 image_captcha = ImageCaptcha(400, 150, font_sizes=(105, 125, 140))
 
-deta = Deta("")
+deta = Deta()
 data = deta.Base("data")
 drive = deta.Drive("CAPTCHA")
 
